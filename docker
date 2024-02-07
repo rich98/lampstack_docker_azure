@@ -40,14 +40,50 @@ Deploy the Docker Image on Azure: After the Docker image is available in a regis
 Here’s a more detailed step-by-step guide:
 
 Install Docker on your local machine1.
-Download Docker Desktop Installer: You can download the Docker Desktop Installer from the official Docker website1.
+Download Docker Desktop Installer: You can download the Docker Desktop Installer from the official Docker website1
 Run the Installer: After downloading, double-click the Docker Desktop Installer.exe to run the installer1. By default, Docker Desktop is installed at C:\\Program Files\\Docker\\Docker1.
 Choose the Backend: When prompted, ensure the Use WSL 2 instead of Hyper-V option on the Configuration page is selected or not depending on your choice of backend1.
 Complete the Installation: Follow the prompts to complete the installation. You may need to restart your computer to finish the installation process1.
 Verify the Installation: Open a command prompt or terminal window and type docker --version to check if Docker was installed correctly. You should see a message with your Docker version number2.
-Please note that these instructions are for Windows. The process may vary slightly for other operating systems2.
+Please note that these instructions are for Windows. The process may vary slightly for other operating systems.
 
-Create a Dockerfile for your LAMP stack application1.
+Create a Dockerfile for your LAMP stack application
+
+ Dockerfile for a LAMP stack application:
+
+# Use an official Ubuntu runtime as a base image
+FROM ubuntu:latest
+
+# Update the system
+RUN apt-get update -y
+
+# Install Apache
+RUN apt-get install apache2 -y
+
+# Install MySQL
+RUN apt-get install mysql-server -y
+
+# Install PHP
+RUN apt-get install php libapache2-mod-php php-mysql -y
+
+# Copy the local src directory contents into the container at /var/www/html/
+COPY src/ /var/www/html/
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run Apache in the foreground
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+
+This Dockerfile starts with an Ubuntu base image, installs Apache, MySQL, and PHP, copies your source code into the image, and then runs Apache.
+
+After you’ve created your Dockerfile, you can build your Docker image using the docker build command:
+
+docker build -t my-lamp-image .
+
+This command builds a Docker image from your Dockerfile and tags it as my-lamp-image.
+
+
 Build the Docker image using the docker build command1.
 Test the Docker image locally using the docker run command1.
 Push the Docker image to a Docker registry using the docker push command1.
